@@ -67,3 +67,9 @@ def test_full_awdp_flow():
     top = board.json()[0]
     assert top["team_name"] == "RedTeam"
     assert top["score"] >= 250
+
+
+def test_frontend_index_page():
+    res = client.get("/")
+    assert res.status_code == 200
+    assert "Dino AWDP Platform" in res.text

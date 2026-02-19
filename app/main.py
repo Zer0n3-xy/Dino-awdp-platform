@@ -1,4 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -33,6 +35,7 @@ from app.services import (
 )
 
 app = FastAPI(title=settings.app_name)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 @app.on_event("startup")
@@ -44,6 +47,12 @@ def startup() -> None:
     finally:
         db.close()
 
+
+
+
+@app.get("/", include_in_schema=False)
+def frontend_home():
+    return FileResponse("app/static/index.html")
 
 @app.post("/auth/register", response_model=TokenResponse)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):

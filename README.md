@@ -21,6 +21,7 @@ uvicorn app.main:app --reload
 ```
 
 访问：
+- 前端首页: `http://127.0.0.1:8000/`
 - OpenAPI: `http://127.0.0.1:8000/docs`
 
 ## 运行测试
@@ -53,3 +54,15 @@ app/
   main.py      # FastAPI 路由
 tests/
 ```
+
+
+## 前端页面
+
+当前已内置一个单页前端（`app/static/index.html`），可直接调用后端接口完成：
+
+- 注册 / 登录（自动保存 JWT）
+- 创建队伍 / 通过邀请码加入队伍
+- 查询题目并分配动态容器
+- 提交 Flag
+- 提交 Patch
+- 查看排行榜
