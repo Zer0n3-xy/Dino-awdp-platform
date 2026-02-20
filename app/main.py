@@ -1,6 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -39,7 +38,6 @@ from app.services import (
 )
 
 app = FastAPI(title=settings.app_name)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 @app.on_event("startup")
@@ -54,8 +52,39 @@ def startup() -> None:
 
 @app.get("/", include_in_schema=False)
 def frontend_home():
-    return RedirectResponse(url="/static/login.html")
+    return RedirectResponse(url="/login")
 
+
+
+
+@app.get("/login", include_in_schema=False)
+def login_page():
+    return FileResponse("app/views/login.html")
+
+
+@app.get("/competition-console", include_in_schema=False)
+def competition_page():
+    return FileResponse("app/views/competition_console.html")
+
+
+@app.get("/team-console", include_in_schema=False)
+def team_page():
+    return FileResponse("app/views/team_console.html")
+
+
+@app.get("/challenge-console", include_in_schema=False)
+def challenge_page():
+    return FileResponse("app/views/challenge_console.html")
+
+
+@app.get("/submission-console", include_in_schema=False)
+def submission_page():
+    return FileResponse("app/views/submission_console.html")
+
+
+@app.get("/leaderboard-console", include_in_schema=False)
+def leaderboard_page():
+    return FileResponse("app/views/leaderboard_console.html")
 
 @app.post("/auth/register", response_model=TokenResponse)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):

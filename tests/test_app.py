@@ -86,12 +86,12 @@ def test_frontend_pages_available():
     assert root.status_code in (302, 307)
 
     for path in [
-        "/static/login.html",
-        "/static/competitions.html",
-        "/static/teams.html",
-        "/static/challenges.html",
-        "/static/submissions.html",
-        "/static/leaderboard.html",
+        "/login",
+        "/competition-console",
+        "/team-console",
+        "/challenge-console",
+        "/submission-console",
+        "/leaderboard-console",
     ]:
         res = client.get(path)
         assert res.status_code == 200

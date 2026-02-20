@@ -22,12 +22,12 @@ uvicorn app.main:app --reload
 
 访问：
 - 前端首页: `http://127.0.0.1:8000/`（将跳转到登录页面）
-- 登录注册页: `http://127.0.0.1:8000/static/login.html`
-- 比赛管理页: `http://127.0.0.1:8000/static/competitions.html`
-- 队伍管理页: `http://127.0.0.1:8000/static/teams.html`
-- 题目容器页: `http://127.0.0.1:8000/static/challenges.html`
-- 提交中心页: `http://127.0.0.1:8000/static/submissions.html`
-- 排行榜页: `http://127.0.0.1:8000/static/leaderboard.html`
+- 登录注册页: `http://127.0.0.1:8000/login`
+- 比赛管理页: `http://127.0.0.1:8000/competition-console`
+- 队伍管理页: `http://127.0.0.1:8000/team-console`
+- 题目容器页: `http://127.0.0.1:8000/challenge-console`
+- 提交中心页: `http://127.0.0.1:8000/submission-console`
+- 排行榜页: `http://127.0.0.1:8000/leaderboard-console`
 - OpenAPI: `http://127.0.0.1:8000/docs`
 
 ## 运行测试

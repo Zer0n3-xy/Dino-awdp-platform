@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>登录注册</title>
+<style>body{margin:0;background:#0f172a;color:#e2e8f0;font-family:Arial}.container{max-width:1000px;margin:0 auto;padding:20px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.nav a{color:#93c5fd;text-decoration:none;border:1px solid #1f2937;padding:6px 10px;border-radius:8px}.card{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:14px}.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}input,button{border-radius:8px;border:1px solid #374151;background:#0b1220;color:#e2e8f0;padding:8px 10px}button{background:#2563eb;border:none}pre{background:#020617;padding:10px;border-radius:8px}</style></head>
+<body><div class="container"><h1>登录 / 注册</h1><div class="nav">
+<a href="/login">登录注册</a><a href="/competition-console">比赛管理</a><a href="/team-console">队伍管理</a><a href="/challenge-console">题目与容器</a><a href="/submission-console">Flag/Patch提交</a><a href="/leaderboard-console">排行榜</a>
+</div><div class="card"><div class="row"><input id="username" placeholder="用户名"><input id="password" type="password" placeholder="密码"></div><div class="row"><button onclick="register()">注册</button><button onclick="login()">登录</button></div><pre id="out"></pre></div></div>
+<script>
+const TOKEN_KEY='awdp_token'; const getToken=()=>localStorage.getItem(TOKEN_KEY)||''; const setToken=t=>localStorage.setItem(TOKEN_KEY,t||'');
+async function api(path,opt={},auth=false){const h={'Content-Type':'application/json',...(opt.headers||{})}; if(auth&&getToken()) h.Authorization=`Bearer ${getToken()}`; const r=await fetch(path,{...opt,headers:h}); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.detail||JSON.stringify(d)); return d;}
+const v=id=>document.getElementById(id).value.trim(); const show=(id,d)=>document.getElementById(id).textContent=JSON.stringify(d,null,2);
+async function register(){try{const d=await api('/auth/register',{method:'POST',body:JSON.stringify({username:v('username'),password:v('password')})});setToken(d.access_token);show('out',d);}catch(e){show('out',{error:e.message});}}
+async function login(){try{const d=await api('/auth/login',{method:'POST',body:JSON.stringify({username:v('username'),password:v('password')})});setToken(d.access_token);show('out',d);}catch(e){show('out',{error:e.message});}}
+</script></body></html>
