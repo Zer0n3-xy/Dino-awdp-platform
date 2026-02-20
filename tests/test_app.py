@@ -15,6 +15,18 @@ def test_full_awdp_flow():
     assert reg.status_code == 200
     token = reg.json()["access_token"]
 
+    comp = client.post(
+        "/competitions",
+        headers=auth_header(token),
+        json={"name": "Final-2026", "description": "AWDP final round"},
+    )
+    assert comp.status_code == 200
+    assert comp.json()["name"] == "Final-2026"
+
+    comp_list = client.get("/competitions")
+    assert comp_list.status_code == 200
+    assert len(comp_list.json()) >= 1
+
     team = client.post("/teams", headers=auth_header(token), json={"name": "RedTeam"})
     assert team.status_code == 200
     invite_code = team.json()["invite_code"]
@@ -69,7 +81,17 @@ def test_full_awdp_flow():
     assert top["score"] >= 250
 
 
-def test_frontend_index_page():
-    res = client.get("/")
-    assert res.status_code == 200
-    assert "Dino AWDP Platform" in res.text
+def test_frontend_pages_available():
+    root = client.get("/", follow_redirects=False)
+    assert root.status_code in (302, 307)
+
+    for path in [
+        "/static/login.html",
+        "/static/competitions.html",
+        "/static/teams.html",
+        "/static/challenges.html",
+        "/static/submissions.html",
+        "/static/leaderboard.html",
+    ]:
+        res = client.get(path)
+        assert res.status_code == 200

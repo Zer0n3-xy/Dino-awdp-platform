@@ -1,5 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,6 +11,8 @@ from app.deps import get_current_user
 from app.models import Challenge, User
 from app.schemas import (
     ChallengeResponse,
+    CompetitionCreateRequest,
+    CompetitionResponse,
     ContainerAllocateRequest,
     ContainerResponse,
     FlagSubmitRequest,
@@ -26,10 +28,12 @@ from app.schemas import (
 from app.services import (
     allocate_container,
     calculate_leaderboard,
+    create_competition,
     create_team_and_join,
     ensure_default_challenges,
     get_user_team,
     join_team_by_invite,
+    list_competitions,
     process_flag_submission,
     process_patch_submission,
 )
@@ -48,11 +52,10 @@ def startup() -> None:
         db.close()
 
 
-
-
 @app.get("/", include_in_schema=False)
 def frontend_home():
-    return FileResponse("app/static/index.html")
+    return RedirectResponse(url="/static/login.html")
+
 
 @app.post("/auth/register", response_model=TokenResponse)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):
@@ -74,6 +77,22 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token(subject=user.username)
     return TokenResponse(access_token=token)
+
+
+@app.post("/competitions", response_model=CompetitionResponse)
+def create_competition_api(
+    payload: CompetitionCreateRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    item = create_competition(db, current_user.id, payload.name, payload.description)
+    return CompetitionResponse(id=item.id, name=item.name, description=item.description)
+
+
+@app.get("/competitions", response_model=list[CompetitionResponse])
+def list_competitions_api(db: Session = Depends(get_db)):
+    rows = list_competitions(db)
+    return [CompetitionResponse(id=item.id, name=item.name, description=item.description) for item in rows]
 
 
 @app.post("/teams", response_model=TeamResponse)

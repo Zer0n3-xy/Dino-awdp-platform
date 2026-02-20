@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.models import (
     Challenge,
+    Competition,
     DynamicContainer,
     FlagSubmission,
     PatchSubmission,
@@ -159,3 +160,17 @@ def calculate_leaderboard(db: Session):
         .order_by(func.coalesce(func.sum(ScoreEvent.points), 0).desc(), Team.id.asc())
     ).all()
     return rows
+
+
+def create_competition(db: Session, user_id: int, name: str, description: str) -> Competition:
+    if db.scalar(select(Competition).where(Competition.name == name)):
+        raise HTTPException(status_code=400, detail="Competition name already exists")
+    item = Competition(name=name, description=description, created_by=user_id)
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+def list_competitions(db: Session):
+    return db.scalars(select(Competition).order_by(Competition.created_at.desc(), Competition.id.desc())).all()

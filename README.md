@@ -21,7 +21,13 @@ uvicorn app.main:app --reload
 ```
 
 访问：
-- 前端首页: `http://127.0.0.1:8000/`
+- 前端首页: `http://127.0.0.1:8000/`（将跳转到登录页面）
+- 登录注册页: `http://127.0.0.1:8000/static/login.html`
+- 比赛管理页: `http://127.0.0.1:8000/static/competitions.html`
+- 队伍管理页: `http://127.0.0.1:8000/static/teams.html`
+- 题目容器页: `http://127.0.0.1:8000/static/challenges.html`
+- 提交中心页: `http://127.0.0.1:8000/static/submissions.html`
+- 排行榜页: `http://127.0.0.1:8000/static/leaderboard.html`
 - OpenAPI: `http://127.0.0.1:8000/docs`
 
 ## 运行测试
@@ -58,9 +64,10 @@ tests/
 
 ## 前端页面
 
-当前已内置一个单页前端（`app/static/index.html`），可直接调用后端接口完成：
+当前已内置多页面前端（`app/static/*.html`），每个功能都有独立页面，便于运营人员和参赛队操作：
 
 - 注册 / 登录（自动保存 JWT）
+- 创建比赛（新增后端接口）
 - 创建队伍 / 通过邀请码加入队伍
 - 查询题目并分配动态容器
 - 提交 Flag
